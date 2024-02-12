@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  bootstrap-node-api-ts:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    environment:
+      - SERVER_HOST=0.0.0.0
