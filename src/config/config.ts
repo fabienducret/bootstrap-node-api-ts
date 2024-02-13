@@ -3,6 +3,7 @@ import 'dotenv/config';
 export type Config = {
   host: string;
   port: number;
+  fuelDebitUrl: string;
 };
 
 export const initConfig = (): Config => {
@@ -18,8 +19,15 @@ export const initConfig = (): Config => {
     throw new Error('missing var SERVER_PORT');
   }
 
+  const fuelDebitUrl = process.env.FUEL_DEBIT_URL;
+
+  if (!fuelDebitUrl) {
+    throw new Error('missing var FUEL_DEBIT_URL');
+  }
+
   return {
     host,
     port: parseInt(port, 10),
+    fuelDebitUrl,
   };
 };

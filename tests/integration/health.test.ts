@@ -5,6 +5,8 @@ import { createServerWith } from '../../src/server/server.js';
 const createServer = () => {
   return createServerWith({
     health: healthController,
+    getInjectionDebit: async () => {},
+    updateRegime: async () => {},
   });
 };
 
