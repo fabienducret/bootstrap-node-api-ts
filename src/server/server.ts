@@ -1,8 +1,18 @@
 import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import { loadRoutes } from './routes.js';
+import type { RequestGetInjectionDebit } from '../injection/infra/controllers/get-injection-debit.js';
+import type { RequestUpdateRegime } from '../injection/infra/controllers/update-regime.js';
 
 export type Controllers = {
   health: (req: FastifyRequest, reply: FastifyReply) => Promise<void>;
+  getInjectionDebit: (
+    req: RequestGetInjectionDebit,
+    reply: FastifyReply
+  ) => Promise<void>;
+  updateRegime: (
+    req: RequestUpdateRegime,
+    reply: FastifyReply
+  ) => Promise<void>;
 };
 
 interface Server {

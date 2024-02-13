@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { Controllers } from './server.js';
 import { withAuthorization } from './hooks/with-authorization.js';
+import type { Controllers } from './server.js';
 
 export const loadRoutes = (
   server: FastifyInstance,
@@ -13,6 +13,8 @@ export const loadRoutes = (
 const publicRoutesWith = (controllers: Controllers) => {
   return async (server: FastifyInstance) => {
     server.get('/health', controllers.health);
+
+    server.get('/injection-debit', controllers.getInjectionDebit);
   };
 };
 
@@ -21,5 +23,6 @@ const privateRoutesWith = (controllers: Controllers) => {
     server.addHook('preHandler', withAuthorization);
 
     server.get('/health/private', controllers.health);
+    server.patch('/regime/:regime', controllers.updateRegime);
   };
 };

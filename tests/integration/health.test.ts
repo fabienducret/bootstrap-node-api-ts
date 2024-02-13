@@ -1,10 +1,13 @@
 import { test } from '@japa/runner';
 import { healthController } from '../../src/health/controllers/health.js';
 import { createServerWith } from '../../src/server/server.js';
+import { HttpStatus } from '../../src/server/http-status.js';
 
 const createServer = () => {
   return createServerWith({
     health: healthController,
+    getInjectionDebit: async () => {},
+    updateRegime: async () => {},
   });
 };
 
@@ -26,7 +29,7 @@ test.group('health', async (group) => {
     const response = await fetch(`http://${host}:${port}/health`);
 
     // Assert
-    assert.equal(response.status, 200);
+    assert.equal(response.status, HttpStatus.OK);
     assert.equal(await response.text(), 'ok');
   });
 });
