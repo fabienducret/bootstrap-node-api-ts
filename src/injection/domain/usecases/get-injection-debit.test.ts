@@ -1,16 +1,18 @@
-import { test } from '@japa/runner';
-import { getInjectionDebitUseCase } from './get-injection-debit.js';
-import { inMemoryRulesRepository } from '../../infra/repositories/in-memory-rules.js';
+import {test} from '@japa/runner';
+import {getInjectionDebitUseCase} from './get-injection-debit.js';
+import {inMemoryRulesRepository} from '../../infra/repositories/in-memory-rules.js';
+import {RuleIdentifier} from "./rules/rules.js";
+import {Regime} from "./update-regime.js";
 
 const stubRules = [
   {
-    id: (): number => 1,
+    id: RuleIdentifier.ONE,
     apply: async (debit: number) => {
       return debit * 0.75;
     },
   },
   {
-    id: (): number => 2,
+    id: RuleIdentifier.TWO,
     apply: async (debit: number) => {
       const max = 500;
       return debit < max ? debit : max;
@@ -20,7 +22,7 @@ const stubRules = [
 
 const stubFuelDebitAdapter = async () => {
   return {
-    regime: 'A',
+    regime: Regime.A,
     fuelDebit: 1000,
   };
 };

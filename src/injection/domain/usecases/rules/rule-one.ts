@@ -1,5 +1,6 @@
 import type { FuelDebitAdapter } from '../../ports/secondary/fuel-debit-adapter.js';
 import type { Rule } from './rules.js';
+import {RuleIdentifier} from "./rules.js";
 
 export const createRuleOne = (fuelDebitAdapter: FuelDebitAdapter): Rule => {
   const getPreviousDebit = async (planeId: number, hour: number) => {
@@ -7,12 +8,12 @@ export const createRuleOne = (fuelDebitAdapter: FuelDebitAdapter): Rule => {
       return 0;
     }
 
-    const response = await fuelDebitAdapter(planeId, hour - 1);
-    return response.fuelDebit;
+    const { fuelDebit } = await fuelDebitAdapter(planeId, hour - 1);
+    return fuelDebit;
   };
 
   return {
-    id: (): number => 1,
+    id: RuleIdentifier.ONE,
     apply: async (
       fuelDebit: number,
       planeId: number,

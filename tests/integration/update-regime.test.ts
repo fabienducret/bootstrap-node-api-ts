@@ -36,7 +36,7 @@ test.group('update-regime', async (group) => {
         Authorization: 'true',
       },
       body: JSON.stringify({
-        rule: 10,
+        rule: 10
       }),
     });
 
