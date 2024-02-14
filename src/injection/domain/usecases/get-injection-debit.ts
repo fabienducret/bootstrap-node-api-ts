@@ -14,23 +14,31 @@ export const getInjectionDebitUseCase = ({
   rulesRepository,
   fuelDebitAdapter,
 }: Params): GetInjectionDebit => {
-  const rulesFor = async (regime: string) => rulesRepository.idsFor(regime);
+  const rulesFor = (regime: string) => rulesRepository.getRegimeRules(regime);
 
-  const applyRulesToCalculateInjectionDebit = (
+  // todo: maybe pass an object as params rather than positional arguments to allow more flexibility down the road
+  // as a rule of thumb, when there are more than three arguments, it is getting out of control and it is better to pass
+  // them in an object
+  const applyRulesToCalculateInjectionDebit = async (
     rules: Rule[],
-    intialFuelDebit: number,
+    initialFuelDebit: number,
     planeId: number,
     hour: number
-  ): Promise<number> => {
-    return rules.reduce(async (fuelDebit, rule) => {
-      return rule.apply(await fuelDebit, planeId, hour);
-    }, Promise.resolve(intialFuelDebit));
+  ) => {
+    let fuelDebit = initialFuelDebit;
+
+    // Easier to read than reduce for this async operations
+    for (const rule of rules) {
+      fuelDebit = await rule.apply(fuelDebit, planeId, hour);
+    }
+
+    return fuelDebit;
   };
 
-  return async (planeId: number, hour: number): Promise<number> => {
+  return async (planeId: number, hour: number) => {
     const { regime, fuelDebit } = await fuelDebitAdapter(planeId, hour);
     const rulesIds = await rulesFor(regime);
-    const rulesToApply = rules.filter((r) => rulesIds.includes(r.id()));
+    const rulesToApply = rules.filter((r) => rulesIds.includes(r.id));
 
     return applyRulesToCalculateInjectionDebit(
       rulesToApply,

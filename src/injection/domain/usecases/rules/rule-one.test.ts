@@ -1,12 +1,13 @@
 import { test } from '@japa/runner';
 import { createRuleOne } from './rule-one.js';
+import {Regime} from "../update-regime.js";
 
 const stubFuelDebitAdapter = async (): Promise<{
   regime: string;
   fuelDebit: number;
 }> => {
   return {
-    regime: 'A',
+    regime: Regime.A,
     fuelDebit: 500,
   };
 };

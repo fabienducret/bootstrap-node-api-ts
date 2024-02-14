@@ -3,7 +3,7 @@ import { healthController } from './health/controllers/health.js';
 import { getInjectionDebitUseCase } from './injection/domain/usecases/get-injection-debit.js';
 import { createRules } from './injection/domain/usecases/rules/rules.js';
 import { updateRegimeUseCase } from './injection/domain/usecases/update-regime.js';
-import { fuelDebitAdapterWith } from './injection/infra/adapters/fuel-debit.js';
+import { fuelDebitAdapter } from './injection/infra/adapters/fuel-debit-adapter.js';
 import { getInjectionDebitController } from './injection/infra/controllers/get-injection-debit.js';
 import { updateRegimeController } from './injection/infra/controllers/update-regime.js';
 import { inMemoryRulesRepository } from './injection/infra/repositories/in-memory-rules.js';
@@ -12,32 +12,31 @@ import { Controllers, createServerWith } from './server/server.js';
 
 const main = () => {
   try {
-    const config = initConfig();
-    runServer(config);
+    runServer(initConfig());
   } catch (e: unknown) {
     console.error(e);
     process.exit(1);
   }
 };
 
-const runServer = (c: Config) => {
-  const server = createServerWith(controllers(c));
-  server.run(c.host, c.port);
+const runServer = (config: Config) => {
+  const server = createServerWith(controllers(config));
+  server.run(config.host, config.port);
 };
 
-const controllers = (c: Config): Controllers => {
-  const fuelDebitAdapter = fuelDebitAdapterWith(
+const controllers = (config: Config): Controllers => {
+  const adapter = fuelDebitAdapter(
     defaultHttpClient(),
-    c.fuelDebitUrl
+    config.fuelDebitUrl
   );
 
   return {
     health: healthController,
     getInjectionDebit: getInjectionDebitController(
       getInjectionDebitUseCase({
-        rules: createRules(fuelDebitAdapter),
+        rules: createRules(adapter),
         rulesRepository: inMemoryRulesRepository(),
-        fuelDebitAdapter,
+        fuelDebitAdapter: adapter,
       })
     ),
     updateRegime: updateRegimeController(

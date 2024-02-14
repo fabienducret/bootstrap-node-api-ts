@@ -1,10 +1,11 @@
 import type { FuelDebitAdapter } from '../../ports/secondary/fuel-debit-adapter.js';
 import type { Rule } from './rules.js';
+import {RuleIdentifier} from "./rules.js";
 
 export const createRuleThree = (fuelDebitAdapter: FuelDebitAdapter): Rule => {
   const getFirstDebit = async (planeId: number) => {
-    const response = await fuelDebitAdapter(planeId, 1);
-    return response.fuelDebit;
+    const { fuelDebit } = await fuelDebitAdapter(planeId, 1);
+    return fuelDebit;
   };
 
   const getAverageDebit = async (
@@ -18,22 +19,24 @@ export const createRuleThree = (fuelDebitAdapter: FuelDebitAdapter): Rule => {
 
     const fuelDebits = await Promise.all(previousDebits);
 
-    const sumDebits = fuelDebits.reduce((sum, debit) => {
-      return debit.fuelDebit + sum;
+    const sumDebits = fuelDebits.reduce((sum, { fuelDebit }) => {
+      return fuelDebit + sum;
     }, fuelDebit);
 
     return sumDebits / 3;
   };
 
   return {
-    id: (): number => 3,
+    id: RuleIdentifier.THREE,
     apply: async (
       fuelDebit: number,
       planeId: number,
       hour: number
-    ): Promise<number> => {
-      const firstDebit = await getFirstDebit(planeId);
-      const averageDebit = await getAverageDebit(planeId, fuelDebit, hour);
+    ) => {
+      const [firstDebit, averageDebit] = await  Promise.all([
+        getFirstDebit(planeId),
+        getAverageDebit(planeId, fuelDebit, hour)
+      ]);
 
       return Math.ceil((averageDebit - firstDebit / 5) * 0.45);
     },

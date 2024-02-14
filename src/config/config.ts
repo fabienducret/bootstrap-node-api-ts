@@ -27,7 +27,7 @@ export const initConfig = (): Config => {
 
   return {
     host,
-    port: parseInt(port, 10),
+    port: +port,
     fuelDebitUrl,
   };
 };
