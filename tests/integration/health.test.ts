@@ -1,4 +1,4 @@
-import { test } from '@japa/runner';
+import { expect, test, describe, beforeAll, afterAll } from 'vitest';
 import { healthController } from '../../src/health/controllers/health.js';
 import { createServerWith } from '../../src/server/server.js';
 
@@ -8,25 +8,25 @@ const createServer = () => {
   });
 };
 
-test.group('health', async (group) => {
+describe('health', async () => {
   const host = 'localhost';
   const port = 3000;
   const server = createServer();
 
-  group.setup(async () => {
+  beforeAll(async () => {
     await server.run(host, port);
   });
 
-  group.teardown(async () => {
+  afterAll(async () => {
     await server.close();
   });
 
-  test('returns ok', async ({ assert }) => {
+  test('returns ok', async () => {
     // Act
     const response = await fetch(`http://${host}:${port}/health`);
 
     // Assert
-    assert.equal(response.status, 200);
-    assert.equal(await response.text(), 'ok');
+    expect(response.status).equal(200);
+    expect(await response.text()).equal('ok');
   });
 });
