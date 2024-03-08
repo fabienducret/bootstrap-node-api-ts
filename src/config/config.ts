@@ -1,11 +1,13 @@
-import 'dotenv/config';
-
 export type Config = {
   host: string;
   port: number;
 };
 
 export const initConfig = (): Config => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  process.loadEnvFile(); // must be handle by future version of TS
+
   const host = process.env.SERVER_HOST;
 
   if (!host) {
