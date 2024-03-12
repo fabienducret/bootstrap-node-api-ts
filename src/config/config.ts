@@ -4,9 +4,7 @@ export type Config = {
 };
 
 export const initConfig = (): Config => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  process.loadEnvFile(); // must be handle by future version of TS
+  process.loadEnvFile();
 
   const host = process.env.SERVER_HOST;
 
