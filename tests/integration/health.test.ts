@@ -14,7 +14,7 @@ describe('health', async () => {
   const server = createServer();
 
   beforeAll(async () => {
-    await server.run(host, port);
+    await server.run({ host, port });
   });
 
   afterAll(async () => {
