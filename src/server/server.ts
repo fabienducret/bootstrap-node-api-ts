@@ -6,7 +6,7 @@ export type Controllers = {
 };
 
 interface Server {
-  run: (host: string, port: number) => Promise<string>;
+  run: ({ host, port }: { host: string; port: number }) => Promise<string>;
   close: () => Promise<void>;
 }
 
@@ -15,9 +15,9 @@ export const createServerWith = (controllers: Controllers): Server => {
   loadRoutes(server, controllers);
 
   return {
-    run: async (host: string, port: number): Promise<string> => {
+    run: async ({ host, port }): Promise<string> => {
       console.log(`starting server on ${host}:${port}`);
-      return server.listen({ host: host, port: port });
+      return server.listen({ host, port });
     },
     close: async (): Promise<void> => {
       await server.close();

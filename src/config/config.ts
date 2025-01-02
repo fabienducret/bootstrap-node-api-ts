@@ -1,11 +1,19 @@
 export type Config = {
-  host: string;
-  port: number;
+  server: {
+    host: string;
+    port: number;
+  };
 };
 
 export const initConfig = (): Config => {
   process.loadEnvFile();
 
+  return {
+    server: initServerConfig(),
+  };
+};
+
+const initServerConfig = () => {
   const host = process.env.SERVER_HOST;
 
   if (!host) {
