@@ -24,9 +24,10 @@ describe('health', async () => {
   test('returns ok', async () => {
     // Act
     const response = await fetch(`http://${host}:${port}/health`);
+    const body = await response.text();
 
     // Assert
     expect(response.status).equal(200);
-    expect(await response.text()).equal('ok');
+    expect(body).equal('ok');
   });
 });
